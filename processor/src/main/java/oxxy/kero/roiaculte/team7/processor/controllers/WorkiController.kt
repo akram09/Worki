@@ -53,7 +53,7 @@ class WorkiController() {
                         getImplementedInterfaces()[0].asTypeName() as ClassName
                     ),
                     UseCaseInputType(
-                        elemntAnnotated.getImplementedInterfaces()[0].
+                        (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[0] as ClassName
                     )
                     , simpleName.toString()
                     , UseCaseOutputType(
