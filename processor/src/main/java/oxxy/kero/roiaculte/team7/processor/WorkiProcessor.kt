@@ -2,10 +2,10 @@ package oxxy.kero.roiaculte.team7.processor
 
 import com.google.auto.service.AutoService
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
+import oxxy.kero.roiaculte.team7.processor.controllers.WorkiController
+import oxxy.kero.roiaculte.team7.processor.models.Result
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.Element
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
@@ -20,14 +20,33 @@ class WorkiProcessor :AbstractProcessor() {
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()
     }
+    private lateinit var  controller: WorkiController
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
        p1?.getElementsAnnotatedWith(WorkiUsecase::class.java)?.forEach {
-           if(!it.verifyIsInterface()){
-               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR  ,
-                   "Annotation work only with interface please see the ${it.simpleName}" )
+            controller = WorkiController()
+            val resultIsInterface = controller.isInstanceInterface(it)
+           if(resultIsInterface is Result.Failure){
+                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultIsInterface.message)
                return true
            }
+           val resultOfIsPublic  = controller.isPublicClass(it)
+           if(resultOfIsPublic  is Result.Failure){
+               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultOfIsPublic.message)
+               return true
+           }
+           val resultIsImplementingEither = controller.isImplementingOnlyEither(it)
+           if(resultIsImplementingEither is Result.Failure){
+               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultIsImplementingEither.message)
+               return true
+           }
+           val generateRessourceFolder = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME].orEmpty()
+           if(generateRessourceFolder.isEmpty()){
+               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,"Cannot find path to the generated kotlin files try rebuilding ")
+               return@forEach
+           }
+           controller.init(it ,processingEnv.elementUtils.getPackageOf(it).simpleName.toString() , generateRessourceFolder )
+
 
        }
         return true
@@ -35,7 +54,5 @@ class WorkiProcessor :AbstractProcessor() {
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
     }
-    fun  Element.verifyIsInterface():Boolean {
-        return this.kind ==ElementKind.INTERFACE
-    }
+
 }
