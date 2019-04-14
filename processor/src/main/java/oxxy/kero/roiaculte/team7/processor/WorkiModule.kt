@@ -1,4 +1,0 @@
-package oxxy.kero.roiaculte.team7.processor
-
-class WorkiModule {
-}

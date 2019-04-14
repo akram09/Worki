@@ -4,4 +4,4 @@ import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Usecase(val repositoryClass:KClass<*>)
+annotation class WorkiUsecase(val repositoryClass:KClass<*>)
