@@ -5,5 +5,6 @@ import oxxy.kero.roiaculte.team7.annotation.EitherInteractor
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 
 @WorkiUsecase(ProductRepository::class)
-interface AddProductUsecase: EitherInteractor<Nothing, Nothing, Failure.SubmitionFailure> {
+interface AddProductUsecase: EitherInteractor<Integer, Integer, Failure.SubmitionFailure> {
+
 }

@@ -4,6 +4,7 @@ import oxxy.kero.roiaculte.team7.annotation.CouroutineDispatchers
 import com.squareup.kotlinpoet.*
 import kotlinx.coroutines.CoroutineDispatcher
 import oxxy.kero.roiaculte.team7.annotation.Either
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import oxxy.kero.roiaculte.team7.processor.models.UsecaseModel
 import java.io.File
 import javax.inject.Inject
@@ -16,6 +17,7 @@ class UseCaseGenerator(private val usecaseModel: UsecaseModel  ,private  val pac
         spec.writeTo(usecaseGeneratedFile)
     }
     private fun generateClass(): TypeSpec {
+
         return TypeSpec.classBuilder("Generated_${usecaseModel.name}")
             .addSuperinterface(usecaseModel.superInterface.interfaceClass)
             .primaryConstructor(
@@ -34,8 +36,8 @@ class UseCaseGenerator(private val usecaseModel: UsecaseModel  ,private  val pac
     private fun generateInvokeFunction():FunSpec{
        return  FunSpec.builder("invoke")
             .addParameter("executeParams", usecaseModel.input.InputClass)
-           .returns(Either::class.asClassName().parameterizedBy(String::class))
-           .addCode("return repo.${usecaseModel.name.toLowerCase()}")
+           .returns(Either::class.asClassName().parameterizedBy(usecaseModel.failureClass , usecaseModel.output.inputClass))
+           .addCode("return repo.${usecaseModel.name.toLowerCase()}(executeParams)")
             .addModifiers(KModifier.OVERRIDE).addModifiers(KModifier.SUSPEND).build()
     }
     private fun generateIoPropertyOverriding():PropertySpec{
@@ -55,3 +57,4 @@ class UseCaseGenerator(private val usecaseModel: UsecaseModel  ,private  val pac
     }
 
 }
+

@@ -1,6 +1,7 @@
 package oxxy.kero.roiaculte.team7.processor.models
 
 import com.squareup.kotlinpoet.ClassName
+import kotlin.reflect.KClass
 
 data class UsecaseModel(val superInterface: SuperInterface ,
                         val input :UseCaseInputType,

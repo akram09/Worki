@@ -4,7 +4,9 @@ import oxxy.kero.roiaculte.team7.annotation.Failure
 import oxxy.kero.roiaculte.team7.annotation.EitherInteractor
 import oxxy.kero.roiaculte.team7.annotation.None
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.asTypeName
+import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 import oxxy.kero.roiaculte.team7.processor.Uils.getImplementedInterfaces
 import oxxy.kero.roiaculte.team7.processor.generators.ModuleGenerator
 import oxxy.kero.roiaculte.team7.processor.generators.UseCaseGenerator
@@ -12,6 +14,9 @@ import oxxy.kero.roiaculte.team7.processor.models.*
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
+import javax.lang.model.element.TypeElement
+import javax.lang.model.type.DeclaredType
+import javax.lang.model.type.MirroredTypeException
 
 //todo add exception handling when converting from element to typeElement
 class WorkiController() {
@@ -26,7 +31,7 @@ class WorkiController() {
          }
      }
     fun isImplementingOnlyEither(element: Element):Result<None>{
-       return  if((element.getImplementedInterfaces()[0].asTypeName() as ClassName)
+       return  if((element.getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).rawType
                 .simpleName == EitherInteractor::class.simpleName && element.getImplementedInterfaces().size==1
         ){
             Result.Success(None())
@@ -46,18 +51,22 @@ class WorkiController() {
             useCaseGenerator = UseCaseGenerator(
                 UsecaseModel(
                     SuperInterface(
-                        getImplementedInterfaces()[0].asTypeName() as ClassName
+                        getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName
                     ),
                     UseCaseInputType(
-//                        (getImplementedInterfaces()[0].asTypeName as ParameterizedTypeName).typeArguments[0] as ClassName
-                        Nothing::class.asTypeName()
+                        (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[0] as ClassName
                      )
                     , simpleName.toString()
                     , UseCaseOutputType(
-                       Nothing::class.asTypeName()
+                        (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[1] as ClassName
                     )
-                    , Failure.SubmitionFailure::class.asTypeName()
-                    , Nothing::class.asTypeName()
+                    ,(getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[2] as ClassName
+                    ,  try {
+                        elemntAnnotated.getAnnotation(WorkiUsecase::class.java).repositoryClass.asTypeName()
+                    } catch (mte: MirroredTypeException) {
+                          mte.getTypeMirror().asTypeName() as ClassName
+                    }
+
                 )
                 , packageName , root
             )
