@@ -64,16 +64,24 @@ class WorkiController() {
                     ,  try {
                         elemntAnnotated.getAnnotation(WorkiUsecase::class.java).repositoryClass.asTypeName()
                     } catch (mte: MirroredTypeException) {
-                          mte.getTypeMirror().asTypeName() as ClassName
+                          mte.typeMirror.asTypeName() as ClassName
                     }
 
                 )
                 , packageName , root
             )
+            moduleGenerator = ModuleGenerator(
+                UseCaseProviderModule(
+                    elemntAnnotated.asType().asTypeName() as ClassName, "Generated_${elemntAnnotated.simpleName}"
+                ),
+
+                packageName, root
+            )
         }
     }
     fun generate(){
         useCaseGenerator.generate()
+        moduleGenerator.generate()
     }
     //todo verify only two input for super and no one for child
 

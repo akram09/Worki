@@ -30,7 +30,7 @@ class UseCaseGenerator(private val usecaseModel: UsecaseModel  ,private  val pac
             .addProperty(generateMainPropertyOverriding())
             .addProperty(generateRepoProperty())
             .addFunction(generateInvokeFunction())
-            .build()
+            .build().
     }
 
     private fun generateInvokeFunction():FunSpec{
