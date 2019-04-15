@@ -1,21 +1,17 @@
 package oxxy.kero.roiaculte.team7.processor.controllers
 
-import com.roacult.kero.oxxy.domain.interactors.EitherInteractor
-import com.roacult.kero.oxxy.domain.interactors.None
+import oxxy.kero.roiaculte.team7.annotation.Failure
+import oxxy.kero.roiaculte.team7.annotation.EitherInteractor
+import oxxy.kero.roiaculte.team7.annotation.None
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.asTypeName
-import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 import oxxy.kero.roiaculte.team7.processor.Uils.getImplementedInterfaces
-import oxxy.kero.roiaculte.team7.processor.Uils.getTypeArg
 import oxxy.kero.roiaculte.team7.processor.generators.ModuleGenerator
 import oxxy.kero.roiaculte.team7.processor.generators.UseCaseGenerator
 import oxxy.kero.roiaculte.team7.processor.models.*
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.Modifier
-import javax.lang.model.element.TypeElement
-import javax.lang.model.type.DeclaredType
 
 //todo add exception handling when converting from element to typeElement
 class WorkiController() {
@@ -53,14 +49,15 @@ class WorkiController() {
                         getImplementedInterfaces()[0].asTypeName() as ClassName
                     ),
                     UseCaseInputType(
-                        (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[0] as ClassName
-                    )
+//                        (getImplementedInterfaces()[0].asTypeName as ParameterizedTypeName).typeArguments[0] as ClassName
+                        Nothing::class.asTypeName()
+                     )
                     , simpleName.toString()
                     , UseCaseOutputType(
-                        (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[1] as ClassName
+                       Nothing::class.asTypeName()
                     )
-                    , (getImplementedInterfaces()[0].asTypeName() as ParameterizedTypeName).typeArguments[2] as ClassName
-                    , getAnnotation(WorkiUsecase::class.java).repositoryClass.asTypeName()
+                    , Failure.SubmitionFailure::class.asTypeName()
+                    , Nothing::class.asTypeName()
                 )
                 , packageName , root
             )

@@ -1,4 +1,4 @@
-package com.roacult.kero.oxxy.domain.functional
+package oxxy.kero.roiaculte.team7.annotation
 
 import io.reactivex.Scheduler
 

@@ -1,6 +1,7 @@
 package oxxy.kero.roiaculte.team7.processor
 
 import com.google.auto.service.AutoService
+import com.squareup.kotlinpoet.ParameterizedTypeName
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 import oxxy.kero.roiaculte.team7.processor.controllers.WorkiController
 import oxxy.kero.roiaculte.team7.processor.models.Result
@@ -45,8 +46,9 @@ class WorkiProcessor :AbstractProcessor() {
                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,"Cannot find path to the generated kotlin files try rebuilding ")
                return@forEach
            }
+           ParameterizedTypeName
            controller.init(it ,processingEnv.elementUtils.getPackageOf(it).simpleName.toString() , generateRessourceFolder )
-
+         controller.generate()
 
        }
         return true
