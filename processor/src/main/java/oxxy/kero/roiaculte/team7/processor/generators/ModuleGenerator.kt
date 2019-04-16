@@ -30,8 +30,8 @@ class ModuleGenerator(private val usecaseModel: UseCaseProviderModule, private  
             .addModifiers(KModifier.ABSTRACT)
             .returns(usecaseModel.usecaseClass)
             .addAnnotation(Binds::class.java)
-            .addParameter("usecase", )
-            ).build()
+//            .addParameter("usecase", )
+            .build()
     }
 
 }
