@@ -7,15 +7,16 @@ import oxxy.kero.roiaculte.team7.processor.models.UseCaseProviderModule
 import oxxy.kero.roiaculte.team7.processor.models.UsecaseModel
 import java.io.File
 
-class ModuleGenerator(private val usecaseModel: UseCaseProviderModule, private  val packageName:String, private val  root:String) {
+class ModuleGenerator(private val usecaseModel: UseCaseProviderModule
+                      , private  val packageName:String, private val  root:String):Generator {
 
-    fun generate(){
-        val file  = File(root , "WorkiModule")
-        val fileSpec = FileSpec.builder(packageName , "WorkiModule")
-            .addType(generateClass())
-            .build()
-        fileSpec.writeTo(file)
-    }
+//    fun generate(){
+//        val file  = File(root , "")
+//        val fileSpec = FileSpec.builder(packageName , "WorkiModule")
+//            .addType(generateClass())
+//            .build()
+//        fileSpec.writeTo(file)
+//    }
 
     fun generateClass():TypeSpec{
         return TypeSpec.classBuilder("WorkiModule")

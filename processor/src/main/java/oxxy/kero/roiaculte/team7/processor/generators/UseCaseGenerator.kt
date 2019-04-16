@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class UseCaseGenerator(private val usecaseModel: UsecaseModel  ,private  val packageName:String  , private val  root:String ){
     fun generate(){
-        val usecaseGeneratedFile = File(root , "Generated_${usecaseModel.name}")
+        val usecaseGeneratedFile = File(root , "")
             val spec = FileSpec.builder(packageName ,"Generated_${usecaseModel.name}" )
                 .addType(generateClass()).build()
         spec.writeTo(usecaseGeneratedFile)

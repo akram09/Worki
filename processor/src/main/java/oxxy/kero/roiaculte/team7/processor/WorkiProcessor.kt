@@ -46,7 +46,8 @@ class WorkiProcessor :AbstractProcessor() {
                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,"Cannot find path to the generated kotlin files try rebuilding ")
                return@forEach
            }
-           controller.init(it ,processingEnv.elementUtils.getPackageOf(it).simpleName.toString() , generateRessourceFolder )
+
+           controller.init(it ,"worki.android" , generateRessourceFolder )
          controller.generate()
 
 
