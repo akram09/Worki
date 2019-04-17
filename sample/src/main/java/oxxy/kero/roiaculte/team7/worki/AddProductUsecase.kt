@@ -5,7 +5,7 @@ import oxxy.kero.roiaculte.team7.annotation.EitherInteractor
 import oxxy.kero.roiaculte.team7.annotation.None
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 
-@WorkiUsecase(ProductRepository::class )
+@WorkiUsecase(ProductRepository::class , "addProduct" )
 interface AddProductUsecase: EitherInteractor<None, None, Failure.SubmitionFailure>
 
 data class  UserId(val id:String )

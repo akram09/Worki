@@ -1,3 +1,5 @@
 package oxxy.kero.roiaculte.team7.processor.models
 
-data class Annotation(val repositoryClass:Class<*>)
+import com.squareup.kotlinpoet.ClassName
+
+data class Annotation(val repositoryClass: ClassName, val repositoryFunctionName:String)

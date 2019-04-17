@@ -2,10 +2,14 @@ package oxxy.kero.roiaculte.team7.processor
 
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.ParameterizedTypeName
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.runBlocking
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
+import oxxy.kero.roiaculte.team7.processor.controllers.Controller
 import oxxy.kero.roiaculte.team7.processor.controllers.WorkiController
 import oxxy.kero.roiaculte.team7.processor.models.Result
 import javax.annotation.processing.*
+import javax.inject.Inject
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
@@ -21,36 +25,33 @@ class WorkiProcessor :AbstractProcessor() {
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()
     }
-    private lateinit var  controller: WorkiController
+
+      lateinit var  controller: Controller
+
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
+
        p1?.getElementsAnnotatedWith(WorkiUsecase::class.java)?.forEach {
-            controller = WorkiController()
-            val resultIsInterface = controller.isInstanceInterface(it)
-           if(resultIsInterface is Result.Failure){
-                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultIsInterface.message)
-               return true
-           }
-           val resultOfIsPublic  = controller.isPublicClass(it)
-           if(resultOfIsPublic  is Result.Failure){
-               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultOfIsPublic.message)
-               return true
-           }
-           val resultIsImplementingEither = controller.isImplementingOnlyEither(it)
-           if(resultIsImplementingEither is Result.Failure){
-               processingEnv.messager.printMessage(Diagnostic.Kind.ERROR , resultIsImplementingEither.message)
-               return true
-           }
            val generateRessourceFolder = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME].orEmpty()
            if(generateRessourceFolder.isEmpty()){
                processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,"Cannot find path to the generated kotlin files try rebuilding ")
                return@forEach
            }
-
-           controller.init(it ,"worki.android" , generateRessourceFolder )
-         controller.generate()
-
-
+           controller = Builder.provideControler(it , it.getAnnotation(WorkiUsecase::class.java) ,
+               processingEnv.elementUtils.getPackageOf(it).simpleName.toString() , it.simpleName.toString())
+           var isValidationError = false
+           controller.validate(it) {
+               error , msg->
+                  processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,msg)
+               isValidationError = true
+               return@validate
+           }
+           if(isValidationError){
+               return true
+           }
+           runBlocking {
+               controller.generateUseCase()
+           }
 
        }
         return true
