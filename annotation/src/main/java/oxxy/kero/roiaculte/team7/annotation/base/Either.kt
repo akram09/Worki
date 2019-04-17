@@ -1,5 +1,5 @@
 
-package oxxy.kero.roiaculte.team7.annotation
+package oxxy.kero.roiaculte.team7.annotation.base
 
 
 sealed class Either<out L, out R> {
@@ -26,7 +26,9 @@ fun <A, B, C> ((A) -> B).c(f: (B) -> C): (A) -> C = {
 
 fun <T, L, R> Either<L, R>.flatMap(fn: (R) -> Either<L, T>): Either<L, T> =
         when (this) {
-            is Either.Left -> Either.Left(a)
+            is Either.Left -> Either.Left(
+                a
+            )
             is Either.Right -> fn(b)
         }
 

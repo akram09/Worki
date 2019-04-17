@@ -1,9 +1,10 @@
 package oxxy.kero.roiaculte.team7.worki
 
-import oxxy.kero.roiaculte.team7.annotation.EitherInteractor
-import oxxy.kero.roiaculte.team7.annotation.Failure
-import oxxy.kero.roiaculte.team7.annotation.None
+
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
+import oxxy.kero.roiaculte.team7.annotation.base.EitherInteractor
+import oxxy.kero.roiaculte.team7.annotation.base.Failure
+import oxxy.kero.roiaculte.team7.annotation.base.None
 
 @WorkiUsecase(ProductRepository::class, "deleteProduct")
-interface DeleteProductUsecase :EitherInteractor<None , None, Failure.SubmitionFailure>
+ interface DelProductUsecase : EitherInteractor<None, None, Failure.SubmitionFailure>

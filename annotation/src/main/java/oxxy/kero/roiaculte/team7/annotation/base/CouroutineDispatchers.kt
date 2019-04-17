@@ -1,4 +1,4 @@
-package oxxy.kero.roiaculte.team7.annotation
+package oxxy.kero.roiaculte.team7.annotation.base
 
 import kotlinx.coroutines.CoroutineDispatcher
 

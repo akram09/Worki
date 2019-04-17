@@ -22,6 +22,6 @@ object Builder {
     }
     private fun provideGenerators(element :Element, annotation:WorkiUsecase , packageName: String , root: String
     ):Pair<UseCaseGenerator, UsecaseModel>{
-        return Pair(UseCaseGenerator() , UsecaseModel(annotation, element ,packageName , root ))
+        return Pair(UseCaseGenerator() , UsecaseModel(annotation, element ,root, packageName))
     }
 }

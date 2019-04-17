@@ -38,7 +38,11 @@ class WorkiProcessor :AbstractProcessor() {
                return@forEach
            }
            controller = Builder.provideControler(it , it.getAnnotation(WorkiUsecase::class.java) ,
-               processingEnv.elementUtils.getPackageOf(it).simpleName.toString() , it.simpleName.toString())
+               "worki.android" , generateRessourceFolder)
+
+
+
+
            var isValidationError = false
            controller.validate(it) {
                error , msg->
@@ -49,9 +53,11 @@ class WorkiProcessor :AbstractProcessor() {
            if(isValidationError){
                return true
            }
+
            runBlocking {
                controller.generateUseCase()
            }
+
 
        }
         return true

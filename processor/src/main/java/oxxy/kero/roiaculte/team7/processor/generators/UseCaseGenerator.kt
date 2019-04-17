@@ -1,11 +1,10 @@
 package oxxy.kero.roiaculte.team7.processor.generators
 
-import oxxy.kero.roiaculte.team7.annotation.CouroutineDispatchers
 import com.squareup.kotlinpoet.*
-import oxxy.kero.roiaculte.team7.annotation.Either
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import dagger.multibindings.IntoSet
 import kotlinx.coroutines.*
+import oxxy.kero.roiaculte.team7.annotation.base.CouroutineDispatchers
+import oxxy.kero.roiaculte.team7.annotation.base.Either
 import oxxy.kero.roiaculte.team7.processor.models.UsecaseModel
 import java.io.File
 import javax.inject.Inject
@@ -13,21 +12,29 @@ import javax.inject.Inject
 class UseCaseGenerator  @Inject  constructor():Generator<UsecaseModel>{
 
     override suspend fun  generate(model: UsecaseModel) {
-
         coroutineScope {
             val usecaseGeneratedFile = File(model.packageInfo.root, "")
+
               val generatedMainDispatcherProperty = async {
                   generateMainPropertyOverriding()
               }
+
+
+
             val generatedIoDispatcherProperty  = async {
                 generateIoPropertyOverriding()
             }
+
             val generatedRepositoryProperty = async {
                 generateRepoProperty(model.workiannotation.repositoryClass)
             }
+
             val generatedInvokeFunction = async {
                 generateInvokeFunction(model.input.className , model.failureClass , model.workiannotation.repositoryFunctionName , model.output.className)
             }
+
+
+
             val generatedUsecaseClass = async {  generateClass(model.packageInfo.name ,
                 model.superInterface.interfaceClass , model.workiannotation.repositoryClass , generatedIoDispatcherProperty.await() ,
                 generatedMainDispatcherProperty.await() , generatedRepositoryProperty.await() , generatedInvokeFunction.await())}
@@ -40,7 +47,7 @@ class UseCaseGenerator  @Inject  constructor():Generator<UsecaseModel>{
         }
     }
 
-    private fun generateClass(generatedUsecaseName:String ,useCaseSuperInterface:ParameterizedTypeName , usecaseRepositoryClass:ClassName,
+    private fun generateClass(generatedUsecaseName:String ,useCaseSuperInterface:ClassName , usecaseRepositoryClass:ClassName,
                               dispatcherIoPropertySpec: PropertySpec , dispatcherMainPropertySpec: PropertySpec,
                               repoPropertySpec: PropertySpec , invokeFunctionFunSpec: FunSpec
                               )
