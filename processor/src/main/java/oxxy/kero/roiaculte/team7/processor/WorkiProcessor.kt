@@ -26,7 +26,10 @@ class WorkiProcessor :AbstractProcessor() {
         return SourceVersion.latestSupported()
     }
 
-      lateinit var  controller: Controller
+    /**
+     * the controller will handle the generation and validation operation
+     */
+    lateinit var  controller: Controller
 
 
     override fun process(p0: MutableSet<out TypeElement>?, p1: RoundEnvironment?): Boolean {
@@ -42,23 +45,24 @@ class WorkiProcessor :AbstractProcessor() {
 
 
 
-
+          //a boolean to store if some validation error happened
            var isValidationError = false
+           //validate the elemnt
            controller.validate(it) {
                error , msg->
+               //if there is error we print the error and return from the process function
                   processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,msg)
                isValidationError = true
                return@validate
            }
+
            if(isValidationError){
                return true
            }
-
+             //after validating the elemnt we ll then generate the implementation in a background coroutine
            runBlocking {
                controller.generateUseCase()
            }
-
-
        }
         return true
     }

@@ -11,49 +11,35 @@ import javax.inject.Inject
 
 class UseCaseGenerator  @Inject  constructor():Generator<UsecaseModel>{
 
-    override suspend fun  generate(model: UsecaseModel) {
-        coroutineScope {
+    override suspend fun  generate(model: UsecaseModel) =coroutineScope {
+        // create the file
             val usecaseGeneratedFile = File(model.packageInfo.root, "")
-
-              val generatedMainDispatcherProperty = async {
-                  generateMainPropertyOverriding()
-              }
-
-
-
-            val generatedIoDispatcherProperty  = async {
-                generateIoPropertyOverriding()
-            }
-
-            val generatedRepositoryProperty = async {
-                generateRepoProperty(model.workiannotation.repositoryClass)
-            }
-
-            val generatedInvokeFunction = async {
-                generateInvokeFunction(model.input.className , model.failureClass , model.workiannotation.repositoryFunctionName , model.output.className)
-            }
-
-
-
-            val generatedUsecaseClass = async {  generateClass(model.packageInfo.name ,
+          // generate propertyImplementation for ResultDispatcher
+            val generatedMainDispatcherProperty = generateMainPropertyOverriding()
+        //generate propertyImplementation fro dispatcher
+            val generatedIoDispatcherProperty  = generateIoPropertyOverriding()
+        // generate property of the RepositoryClass  repo
+            val generatedRepositoryProperty =  generateRepoProperty(model.workiannotation.repositoryClass)
+          // generate invoke suspending function
+            val generatedInvokeFunction = generateInvokeFunction(model.input.className , model.failureClass , model.workiannotation.repositoryFunctionName , model.output.className)
+           // generate the class
+            val generatedUsecaseClass =   generateClass(model.packageInfo.name ,
                 model.superInterface.interfaceClass , model.workiannotation.repositoryClass , generatedIoDispatcherProperty.await() ,
-                generatedMainDispatcherProperty.await() , generatedRepositoryProperty.await() , generatedInvokeFunction.await())}
-
-
-
+                generatedMainDispatcherProperty.await() , generatedRepositoryProperty.await() , generatedInvokeFunction.await())
+        //   generate the file
             val spec = FileSpec.builder(model.packageInfo.packageName, "Generated_${model.packageInfo.name}")
                 .addType(generatedUsecaseClass.await()).build()
+        // write to the file and join
             launch { spec.writeTo(usecaseGeneratedFile)}.join()
         }
-    }
 
-    private fun generateClass(generatedUsecaseName:String ,useCaseSuperInterface:ClassName , usecaseRepositoryClass:ClassName,
+
+    private fun CoroutineScope.generateClass(generatedUsecaseName:String ,useCaseSuperInterface:ClassName , usecaseRepositoryClass:ClassName,
                               dispatcherIoPropertySpec: PropertySpec , dispatcherMainPropertySpec: PropertySpec,
                               repoPropertySpec: PropertySpec , invokeFunctionFunSpec: FunSpec
                               )
-            : TypeSpec {
-
-        return TypeSpec.classBuilder("Generated_$generatedUsecaseName")
+            : Deferred<TypeSpec> = async {
+        TypeSpec.classBuilder("Generated_$generatedUsecaseName")
             .addSuperinterface(useCaseSuperInterface)
             .primaryConstructor(
                 FunSpec.constructorBuilder().addParameter("couroutineDispatchers"
@@ -68,29 +54,29 @@ class UseCaseGenerator  @Inject  constructor():Generator<UsecaseModel>{
             .build()
     }
 
-    private fun generateInvokeFunction(usecaseInputClass:ClassName, useCaseFailureClass:ClassName
+    private fun CoroutineScope.generateInvokeFunction(usecaseInputClass:ClassName, useCaseFailureClass:ClassName
                                      ,
                                        functionName:String,
-                                        usecaseOutputClass:ClassName):FunSpec{
-       return  FunSpec.builder("invoke")
+                                        usecaseOutputClass:ClassName):Deferred<FunSpec> = async{
+        FunSpec.builder("invoke")
             .addParameter("executeParams", usecaseInputClass)
            .returns(Either::class.asClassName().parameterizedBy(useCaseFailureClass , usecaseOutputClass))
            .addCode("return repo.$functionName(executeParams)")
             .addModifiers(KModifier.OVERRIDE).addModifiers(KModifier.SUSPEND).build()
     }
-    private fun generateIoPropertyOverriding():PropertySpec{
-        return PropertySpec.builder("dispatcher", CoroutineDispatcher::class
+    private  fun CoroutineScope.generateIoPropertyOverriding():Deferred<PropertySpec> = async{
+        PropertySpec.builder("dispatcher", CoroutineDispatcher::class
             , KModifier.OVERRIDE  ).initializer("couroutineDispatchers.computaion")
             .build()
-
     }
-    private fun generateMainPropertyOverriding():PropertySpec{
-        return PropertySpec.builder("ResultDispatcher", CoroutineDispatcher::class , KModifier.OVERRIDE)
+
+    private fun CoroutineScope.generateMainPropertyOverriding():Deferred<PropertySpec> = async{
+         PropertySpec.builder("ResultDispatcher", CoroutineDispatcher::class , KModifier.OVERRIDE)
             .initializer("couroutineDispatchers.main")
             .build()
     }
-    private  fun generateRepoProperty(repositoryClass:ClassName):PropertySpec{
-        return  PropertySpec.builder("repo", repositoryClass)
+    private  fun CoroutineScope.generateRepoProperty(repositoryClass:ClassName):Deferred<PropertySpec>  = async{
+        PropertySpec.builder("repo", repositoryClass)
             .initializer("repo").build()
     }
 
