@@ -7,20 +7,19 @@ import oxxy.kero.roiaculte.team7.processor.generators.Generator
 import oxxy.kero.roiaculte.team7.processor.generators.Model
 import oxxy.kero.roiaculte.team7.processor.generators.UseCaseGenerator
 import oxxy.kero.roiaculte.team7.processor.models.UsecaseModel
-import oxxy.kero.roiaculte.team7.processor.validators.ValidateInterfaceType
-import oxxy.kero.roiaculte.team7.processor.validators.ValidateUseCasePublic
-import oxxy.kero.roiaculte.team7.processor.validators.Validator
+import oxxy.kero.roiaculte.team7.processor.validators.*
 import javax.lang.model.element.Element
 
 object Builder {
-    fun provideControler(element: Element , annotation: WorkiUsecase , packageName:String , root:String): Controller {
-        return WorkiController(provideGenerators(element, annotation , packageName ,root) , provideValidator())
+//    fun provideControler(element: Element , annotation: WorkiUsecase , packageName:String , root:String): Controller {
+//        return WorkiController(provideGenerators(element, annotation , packageName ,root) , provideValidator())
+//    }
+
+    fun provideValidator():List<Validator>{
+        return listOf(ValidateFunctionModifiers(), ValidateRepositoryInterface())
     }
 
-    private fun provideValidator():List<Validator>{
-        return listOf(ValidateInterfaceType(), ValidateInterfaceType(), ValidateUseCasePublic())
-    }
-    private fun provideGenerators(element :Element, annotation:WorkiUsecase , packageName: String , root: String
+    fun provideGenerators(element :Element, annotation:WorkiUsecase , packageName: String , root: String
     ):Pair<UseCaseGenerator, UsecaseModel>{
         return Pair(UseCaseGenerator() , UsecaseModel(annotation, element ,root, packageName))
     }
