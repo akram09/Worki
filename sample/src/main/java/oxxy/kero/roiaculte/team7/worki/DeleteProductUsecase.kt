@@ -6,5 +6,5 @@ import oxxy.kero.roiaculte.team7.annotation.base.EitherInteractor
 import oxxy.kero.roiaculte.team7.annotation.base.Failure
 import oxxy.kero.roiaculte.team7.annotation.base.None
 
-@WorkiUsecase(ProductRepository::class, "deleteProduct")
+
  interface DelProductUsecase : EitherInteractor<None, None, Failure.SubmitionFailure>
