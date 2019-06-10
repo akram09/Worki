@@ -1,15 +1,18 @@
-//package oxxy.kero.roiaculte.team7.processor.controllers
-//
-//
-//import oxxy.kero.roiaculte.team7.processor.Builder
-//import oxxy.kero.roiaculte.team7.processor.generators.UseCaseGenerator
-//import oxxy.kero.roiaculte.team7.processor.validators.Validator
-//import javax.lang.model.element.Element
-//import javax.lang.model.element.ExecutableElement
-//
-//
-//class WorkiController  constructor(private val functionAnnotated:ExecutableElement) {
-//    private val validators:List<Validator> by lazy {
+package oxxy.kero.roiaculte.team7.processor.controllers
+
+import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
+import javax.lang.model.element.ExecutableElement
+
+
+class WorkiController  constructor(private val functionAnnotated: ExecutableElement , private val usecase: WorkiUsecase):Controller {
+    override suspend fun validate() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun generateUseCase() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+    //    private val validators:List<Validator> by lazy {
 //             Builder.provideValidator()
 //    }
 //
@@ -29,4 +32,4 @@
 ////        generator.first.generate(generator.second)
 ////    }
 //
-//}
+}

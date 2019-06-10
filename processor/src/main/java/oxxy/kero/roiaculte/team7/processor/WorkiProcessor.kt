@@ -1,15 +1,22 @@
 package oxxy.kero.roiaculte.team7.processor
 
 import com.google.auto.service.AutoService
+import com.squareup.kotlinpoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.asTypeName
 
 import kotlinx.coroutines.*
 import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 import oxxy.kero.roiaculte.team7.annotation.base.EitherInteractor
+import oxxy.kero.roiaculte.team7.processor.Uils.getTypeArg
+import oxxy.kero.roiaculte.team7.processor.Uils.isEither
 import oxxy.kero.roiaculte.team7.processor.controllers.Controller
+import java.lang.annotation.ElementType
+import java.lang.reflect.ParameterizedType
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
+import javax.lang.model.type.DeclaredType
 import javax.tools.Diagnostic
 import kotlin.reflect.full.isSubclassOf
 
@@ -33,7 +40,12 @@ class WorkiProcessor :AbstractProcessor() {
             processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,"Cannot find path to the generated kotlin files try rebuilding ")
             return false
         }
+        annotatedFunctions?.forEach {
 
+        }
+//        annotatedFunctions?.forEach {
+////            processingEnv.messager.printMessage(Diagnostic.Kind.ERROR ,(it as ExecutableElement).returnType.isEither("dde").toString())
+//        }
         return true
     }
     companion object {

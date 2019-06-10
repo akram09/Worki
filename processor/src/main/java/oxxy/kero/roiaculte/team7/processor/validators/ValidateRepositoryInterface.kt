@@ -1,12 +1,13 @@
 package oxxy.kero.roiaculte.team7.processor.validators
 
+import oxxy.kero.roiaculte.team7.annotation.WorkiUsecase
 import oxxy.kero.roiaculte.team7.processor.RepositoryNotInterface
 import java.lang.ClassCastException
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 
 class ValidateRepositoryInterface:Validator {
-    override suspend fun validate(fonctionElement: ExecutableElement) {
+    override suspend fun validate(fonctionElement: ExecutableElement , workiUsecase: WorkiUsecase) {
         val typeElement :TypeElement
         try{
             typeElement = fonctionElement.enclosingElement as TypeElement

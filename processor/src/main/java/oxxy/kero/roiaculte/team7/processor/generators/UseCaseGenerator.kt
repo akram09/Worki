@@ -1,13 +1,6 @@
-//package oxxy.kero.roiaculte.team7.processor.generators
-//
-//import com.squareup.kotlinpoet.*
-//import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-//import kotlinx.coroutines.*
-//import oxxy.kero.roiaculte.team7.annotation.base.CouroutineDispatchers
-//import oxxy.kero.roiaculte.team7.annotation.base.Either
-//import oxxy.kero.roiaculte.team7.processor.models.UsecaseModel
-//import java.io.File
-//import javax.inject.Inject
+package oxxy.kero.roiaculte.team7.processor.generators
+
+
 //
 //class UseCaseGenerator  @Inject  constructor():Generator<UsecaseModel>{
 //
